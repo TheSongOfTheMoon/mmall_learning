@@ -21,6 +21,16 @@
 
   <dependencies><!--依赖配置-->
 
+    <!--设置我的servler版本-->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+
+
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-servlet-api</artifactId>
@@ -247,6 +257,8 @@
     </dependency>
 
 
+
+
   </dependencies>
 
 
@@ -264,6 +276,7 @@
         </configuration>
       </plugin>
 
+      <!--编译时候对lib文件进行加载-->
       <!-- geelynote maven的核心插件之-complier插件默认只支持编译Java 1.4，因此需要加上支持高版本jre的配置，在pom.xml里面加上 增加编译插件 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -280,6 +293,8 @@
     </plugins>
 
   </build>
+
+
 
 
 </project>

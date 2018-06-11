@@ -105,6 +105,7 @@
       </if>
     </trim>
   </insert>
+  <!--哪个不为空,更新哪一个-->
   <update id="updateByPrimaryKeySelective" parameterType="com.mmall.pojo.User" >
     update mmall_user
     <set >
@@ -138,6 +139,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <!--不管如何,全部更新-->
   <update id="updateByPrimaryKey" parameterType="com.mmall.pojo.User" >
     update mmall_user
     set username = #{username,jdbcType=VARCHAR},
@@ -151,4 +153,60 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <!--查询用户是否存在-->
+  <select id="checkUserName" resultType="int" parameterType="String">
+    SELECT COUNT(*) from mmall_user
+    WHERE username=#{username}
+  </select>
+
+  <!--查询邮箱是否存在-->
+  <select id="checkUserEmail" resultType="int" parameterType="String">
+    SELECT COUNT(*) from mmall_user
+    WHERE email=#{email}
+  </select>
+
+  <select id="selectLogin" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM mmall_user
+    WHERE username=#{username} AND password=#{password}
+  </select>
+
+
+  <select id="selectQuestion" resultType="String" parameterType="String">
+    SELECT question
+    FROM mmall_user
+    WHERE username=#{username}
+  </select>
+
+  <select id="CheckAnswer" resultType="int" parameterType="map">
+    SELECT count(1)
+    FROM mmall_user
+    WHERE username=#{username}
+    AND question=#{question}
+    AND answer=#{answer}
+  </select>
+
+  <update id="UpdatePasswordByName"  parameterType="map">
+    UPDATE mmall_user
+    SET password=#{password},update_time=now()
+    WHERE username=#{username}
+  </update>
+
+  <select id="CheckRestPassword" resultType="int" parameterType="map">
+    SELECT count(1)
+    FROM mmall_user
+    WHERE password=#{password}
+    AND  id=#{userId}
+
+  </select>
+  <!--检查email-->
+  <select id="CheckEmail" resultType="int" parameterType="map">
+    SELECT COUNT(1)
+    from mmall_user
+    WHERE email=#{email_old}
+    AND  id=#{userId}
+  </select>
+
+
 </mapper>

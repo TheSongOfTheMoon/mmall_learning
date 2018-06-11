@@ -2,7 +2,7 @@ package com.mmall.pojo;
 
 import java.util.Date;
 
-public class Cart {
+public class Cart extends Category {
     private Integer id;
 
     private Integer userId;

@@ -176,4 +176,45 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM mmall_product ORDER BY  id asc /*使用分页后会自动追加limit 1 offset 10 此类到该SQL中，aop*/
+  </select>
+
+  <!--特殊的处理方法-->
+  <select id="selectByProductNameAndId" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  mmall_product
+    <where>
+      <if test="productName !=null">
+          and name LIKE #{productName}
+      </if>
+      <if test="productId !=null">
+          AND id =#{productId}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectByNameAndCategoryIds" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  mmall_product
+    WHERE status=1
+    <if test="productName !=null">
+      and name LIKE #{productName}
+    </if>
+    <if test="categoryId !=null">
+      and category_id IN
+      <foreach  item="item" index="index" open="(" separator="," close=")" collection="categoryIdList">
+        #{item}
+      </foreach>
+    </if>
+
+
+  </select>
+
+
 </mapper>

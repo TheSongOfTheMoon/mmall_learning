@@ -11,6 +11,7 @@
     <!--扫描器：扫描controller注解-->
     <context:component-scan base-package="com.mmall" annotation-config="true"/>
 
+    <!--springmvc的注解-->
     <mvc:annotation-driven>
         <!--设置编码为utf-8-->
         <mvc:message-converters>
@@ -25,10 +26,13 @@
             <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
                 <property name="supportedMediaTypes">
                     <list>
-                        <value>application/json;charset=UTF-8</value><!--设置JSon的格式-->
+                        <value>application/json;charset=UTF-8</value><!--设置JSon的格式@ResponseBody的配置-->
+                                                         <!--底层是一个集合,此处用key-value的形式将数据给放进去变成json-->
                     </list>
                 </property>
             </bean>
+
+
         </mvc:message-converters>
     </mvc:annotation-driven>
 

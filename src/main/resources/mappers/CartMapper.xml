@@ -118,4 +118,66 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--查找购物车-->
+  <select id="selectCartByUserIdandProductId" resultMap="Map" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    from mmall_cart
+    WHERE  user_id=#{userId}
+    and product_id=#{productId}
+  </select>
+
+  <select id="selectCartByUserId" resultMap="Map" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_cart
+    WHERE user_id=#{userId}
+  </select>
+
+  <select id="selectCartCheckStatusByUserId" resultType="int" parameterType="int">
+    SELECT count(1)
+    from mmall_cart
+    WHERE checked='0'
+    AND user_id=#{useridd}
+  </select>
+
+
+  <delete id="deleteByUserIdProductIds" parameterType="map">
+    DELETE FROM  mmall_cart
+    where user_id=#{userId}
+    <if test="productIdList !=null">
+      AND  product_id IN
+      <foreach collection="productIdList" index="index" item="item" OPEN="(" separator="," close=")">
+          #{item}
+      </foreach>
+    </if>
+  </delete>
+
+  <update id="checkOrUncheckAllProduct"  parameterType="map">
+    UPDATE mall_cart
+    SET checked=#{checked},
+    update_time=now()
+    WHERE user_id=#{userId}
+    <if test="productId!=null">
+     and productId=#{productId}
+    </if>
+  </update>
+
+  <select id="getCartProductCount" resultType="int" parameterType="int">/*ifnull如果为空则赋值为0*/
+  SELECT IFNULL(sum(quantity),0)
+  FROM mall_cart
+  WHERE userId=#{userId}
+  </select>
+
+
+  <select id="selectCheckedCartByUserId" resultType="BaseResultMap" parameterType="int">
+    select
+    <include refid="Base_Column_List" />
+    from mmall_cart
+    WHERE  user_id=#{userId}
+    and checked=1
+  </select>
+
+
 </mapper>
