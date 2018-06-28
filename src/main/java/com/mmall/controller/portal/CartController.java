@@ -10,6 +10,7 @@ import com.mmall.service.ICartService;
 import com.mmall.service.ICategoryService;
 import com.mmall.service.IUserService;
 import com.mmall.vo.CartVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,8 @@ import javax.servlet.http.HttpSession;
 import javax.xml.ws.Response;
 
 @Controller
-@RequestMapping(value ="/cart/")
+@RequestMapping(value ="/cart")
+@Slf4j
 public class CartController {
 
     /*一个Cart是一个记录，相同的用户ID为一个购物车*/
@@ -75,7 +77,7 @@ public class CartController {
     //更新购物车
     @RequestMapping(value ="deleteCart.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<CartVo> deleteCart(HttpSession session,Integer userid, String productIds){
+    public ServerResponse<CartVo> deleteCart(HttpSession session, String productIds){
         if (productIds==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }

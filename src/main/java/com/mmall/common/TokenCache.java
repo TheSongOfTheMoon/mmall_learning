@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-
+//guavaCache缓存
 public class TokenCache {
     public static Logger logger= LoggerFactory.getLogger(TokenCache.class);
 

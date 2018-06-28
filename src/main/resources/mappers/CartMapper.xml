@@ -120,7 +120,7 @@
   </update>
 
   <!--查找购物车-->
-  <select id="selectCartByUserIdandProductId" resultMap="Map" parameterType="map">
+  <select id="selectCartByUserIdandProductId" resultMap="BaseResultMap" parameterType="map">
     SELECT
     <include refid="Base_Column_List" />
     from mmall_cart
@@ -128,7 +128,7 @@
     and product_id=#{productId}
   </select>
 
-  <select id="selectCartByUserId" resultMap="Map" parameterType="map">
+  <select id="selectCartByUserId" resultMap="BaseResultMap" parameterType="int">
     select
     <include refid="Base_Column_List"/>
     from mmall_cart
@@ -144,11 +144,11 @@
 
 
   <delete id="deleteByUserIdProductIds" parameterType="map">
-    DELETE FROM  mmall_cart
+    DELETE FROM mmall_cart
     where user_id=#{userId}
-    <if test="productIdList !=null">
+    <if test="productIdList!=null">
       AND  product_id IN
-      <foreach collection="productIdList" index="index" item="item" OPEN="(" separator="," close=")">
+      <foreach collection="productIdList" index="index" item="item" open="(" separator="," close=")">
           #{item}
       </foreach>
     </if>
@@ -171,7 +171,7 @@
   </select>
 
 
-  <select id="selectCheckedCartByUserId" resultType="BaseResultMap" parameterType="int">
+  <select id="selectCheckedCartByUserId" resultMap="BaseResultMap" parameterType="int">
     select
     <include refid="Base_Column_List" />
     from mmall_cart

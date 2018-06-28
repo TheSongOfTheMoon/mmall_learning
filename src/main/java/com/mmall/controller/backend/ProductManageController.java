@@ -8,8 +8,9 @@ import com.mmall.pojo.User;
 import com.mmall.service.IFileServer;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
-import com.mmall.utils.PropertiesUtils;
+import com.mmall.utils.PropertiesUtil;
 import com.mmall.vo.ProductDetailVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/manage/product")
+@Slf4j
 public class ProductManageController {
 
     @Autowired
@@ -145,7 +147,7 @@ public class ProductManageController {
             String path=request.getSession().getServletContext().getRealPath("upload");//上传的路径名,一般是泛指在ewebapps中
             //创建一个文件处理的服务
             String targetFileName=iFileServer.upload(file,path);
-            String url= PropertiesUtils.getProperties("ftp.server.http.prefix")+targetFileName;
+            String url= PropertiesUtil.getProperties("ftp.server.http.prefix")+targetFileName;
             Map filemap=new HashMap();
             filemap.put("uri",targetFileName);
             filemap.put("url",url);
@@ -178,7 +180,7 @@ public class ProductManageController {
                 resultMap.put("success", false);
                 resultMap.put("msg", "上传失败");
             }
-            String url = PropertiesUtils.getProperties("ftp.server.http.prefix") + targetFileName;
+            String url = PropertiesUtil.getProperties("ftp.server.http.prefix") + targetFileName;
             Map filemap = new HashMap();
             resultMap.put("success", true);
             resultMap.put("msg", "上传成功");

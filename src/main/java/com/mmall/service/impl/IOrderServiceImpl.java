@@ -19,6 +19,7 @@ import com.mmall.common.ServerResponse;
 import com.mmall.dao.*;
 import com.mmall.pojo.*;
 import com.mmall.service.IOrderService;
+import com.mmall.service.IUserService;
 import com.mmall.utils.BigDecimalUtil;
 import com.mmall.utils.DateTimeUtils;
 import com.mmall.utils.FTPUtil;
@@ -27,10 +28,9 @@ import com.mmall.vo.OrderItemVo;
 import com.mmall.vo.OrderProductVo;
 import com.mmall.vo.OrderVo;
 import com.mmall.vo.ShippingVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +39,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
+@SuppressWarnings("ALL")
 @Service("iOrderService")//为了方便被注入
+@Slf4j
 public class IOrderServiceImpl implements IOrderService {
 
 //================================springIoC容器与日志参数===========================================================================================//
-    private Logger logger= LoggerFactory.getLogger(ICategoryServiceImpl.class);
+    //private Logger logger= LoggerFactory.getLogger(ICategoryServiceImpl.class);
 
     @Autowired
     private OrderMapper orderMapper;
@@ -57,6 +59,9 @@ public class IOrderServiceImpl implements IOrderService {
     private ProductMapper productMapper;
     @Autowired
     private ShippingMapper shippingMapper;
+    @Autowired
+    private IUserService iUserService;
+
 
 //================================逻辑控制层方法===================================================================================================//
 
@@ -122,6 +127,7 @@ public class IOrderServiceImpl implements IOrderService {
 
         //返回订单明细
         OrderVo orderVo=this.assemibleOrderVo(order,orderItemList);
+        log.info("创建订单成功");
         return ServerResponse.createBySuccess(orderVo);
 
     }
@@ -151,7 +157,7 @@ public class IOrderServiceImpl implements IOrderService {
         orderVo.setEndTime(DateTimeUtils.DateToStr(order.getEndTime()));
         orderVo.setCreateTime(DateTimeUtils.DateToStr(order.getCreateTime()));
         orderVo.setCloseTime(DateTimeUtils.DateToStr(order.getCloseTime()));
-        orderVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        orderVo.setImageHost(PropertiesUtil.getProperties("ftp.server.http.prefix"));
 
         //组装购物车商品项目
         List<OrderItemVo> orderItemVoList=Lists.newArrayList();
@@ -198,8 +204,8 @@ public class IOrderServiceImpl implements IOrderService {
         }
         orderProductVo.setProductTotalPrice(payment);
         orderProductVo.setOrderItemVoList(orderItemVoList);
-        orderProductVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
-
+        orderProductVo.setImageHost(PropertiesUtil.getProperties("ftp.server.http.prefix"));
+        log.info("查询产品成功");
         return ServerResponse.createBySuccess(orderProductVo);
     }
 
@@ -211,6 +217,7 @@ public class IOrderServiceImpl implements IOrderService {
             OrderVo orderVo=this.assemibleOrderVo(order,orderItemList);
             return ServerResponse.createBySuccess(orderVo);
         }
+        log.info("查询订单成功");
         return ServerResponse.createByErrorMessage("找不到该订单的明细");
     }
 
@@ -404,6 +411,7 @@ public class IOrderServiceImpl implements IOrderService {
 
     //订单号,用户Id,路径
     public ServerResponse pay(Long orderNo,Integer userId,String path){
+        log.info("开始支付订单3");
         Map<String,String> resultMap= Maps.newHashMap();
         Order order=orderMapper.selectByUserIdAndOrder(userId,orderNo);
         if (order==null){
@@ -469,7 +477,7 @@ public class IOrderServiceImpl implements IOrderService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl(PropertiesUtil.getProperties("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
         /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
@@ -487,7 +495,7 @@ public class IOrderServiceImpl implements IOrderService {
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
         switch (result.getTradeStatus()) {
             case SUCCESS:
-                logger.info("支付宝预下单成功: )");
+                log.info("支付宝预下单成功: )");
 
                 AlipayTradePrecreateResponse response = result.getResponse();
                 dumpResponse(response);
@@ -507,26 +515,26 @@ public class IOrderServiceImpl implements IOrderService {
                 try {
                     FTPUtil.uploadFile(Lists.newArrayList(targetFile));
                 } catch (IOException e) {
-                    logger.error("上传二维码异常："+e.getMessage());
+                    log.error("上传二维码异常："+e.getMessage());
                     e.printStackTrace();
                 }
                 // 需要修改为运行机器上的路径
-                logger.info("二维码文件路径:" + qrPath);
-                String qrUrl=PropertiesUtil.getProperty("ftp.server.http.prefix")+targetFile;
+                log.info("二维码文件路径:" + qrPath);
+                String qrUrl=PropertiesUtil.getProperties("ftp.server.http.prefix")+targetFile;
                 resultMap.put("qrUrl",qrUrl);
 
                 return ServerResponse.createBySuccess(resultMap);
 
             case FAILED:
-                logger.error("支付宝预下单失败!!!");
+                log.error("支付宝预下单失败!!!");
                 return  ServerResponse.createByErrorMessage("支付宝预下单失败!!!");
 
             case UNKNOWN:
-                logger.error("系统异常，预下单状态未知!!!");
+                log.error("系统异常，预下单状态未知!!!");
                 return  ServerResponse.createByErrorMessage("系统异常，预下单状态未知!!!");
 
             default:
-                logger.error("不支持的交易状态，交易返回异常!!!");
+                log.error("不支持的交易状态，交易返回异常!!!");
                 return  ServerResponse.createByErrorMessage("不支持的交易状态，交易返回异常!!!");
         }
 
@@ -536,12 +544,12 @@ public class IOrderServiceImpl implements IOrderService {
     // 简单打印应答
     private void dumpResponse(AlipayResponse response) {
         if (response != null) {
-            logger.info(String.format("code:%s, msg:%s", response.getCode(), response.getMsg()));
+            log.info(String.format("code:%s, msg:%s", response.getCode(), response.getMsg()));
             if (StringUtils.isNotEmpty(response.getSubCode())) {
-                logger.info(String.format("subCode:%s, subMsg:%s", response.getSubCode(),
+                log.info(String.format("subCode:%s, subMsg:%s", response.getSubCode(),
                         response.getSubMsg()));
             }
-            logger.info("body:" + response.getBody());
+            log.info("body:" + response.getBody());
         }
     }
 
@@ -558,8 +566,10 @@ public class IOrderServiceImpl implements IOrderService {
         if (order.getStatus()> Conts.OrderStatusEnum.PAYID.getCode()){
             return ServerResponse.createBySuccess("支付宝重复回调");
         }
+        log.info("来到这里修改状态......");
         if (Conts.AlipayCallBack.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)){
-            order.setPaymentTime(DateTimeUtils.StrToDate(params.get("gmt_payment")));
+            log.info("来到这里修改状态2......");
+            order.setPaymentTime(DateTimeUtils.StrToDate(String.valueOf(params.get("gmt_payment"))));
             order.setStatus(Conts.OrderStatusEnum.PAYID.getCode());
             orderMapper.updateByPrimaryKeySelective(order);
         }

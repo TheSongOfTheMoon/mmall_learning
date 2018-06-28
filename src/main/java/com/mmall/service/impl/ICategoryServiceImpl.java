@@ -3,8 +3,10 @@ package com.mmall.service.impl;
 import com.google.common.collect.Lists;
 import com.mmall.common.ServerResponse;
 import com.mmall.dao.CartMapper;
+import com.mmall.dao.CategoryMapper;
 import com.mmall.pojo.Category;
 import com.mmall.service.ICategoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,13 @@ import java.util.Set;
 
 
 @Service("iCategoryService")//生成以方便被Controller注入
+@Slf4j
 public class ICategoryServiceImpl implements ICategoryService {
 
-    private Logger logger= LoggerFactory.getLogger(ICategoryServiceImpl.class);
+    //private Logger logger= LoggerFactory.getLogger(ICategoryServiceImpl.class);
 
     @Autowired
-    private CartMapper cartMapper;
+    private CategoryMapper categoryMapper;
 
     public ServerResponse addCategory(String categoryName,Integer parentId){
 
@@ -36,7 +39,7 @@ public class ICategoryServiceImpl implements ICategoryService {
         category.setParentId(parentId);
         category.setStatus(true);
 
-        int insertCount= cartMapper.insert(category);
+        int insertCount= categoryMapper.insert(category);
         if (insertCount>0){
             return ServerResponse.createBySuccessMessage("添加品类成功");
         }
@@ -52,7 +55,7 @@ public class ICategoryServiceImpl implements ICategoryService {
         Category category=new Category();
         category.setParentId(categoryId);
         category.setName(categoryName);
-        int updateCount=cartMapper.updateByPrimaryKeySelective(category);
+        int updateCount=categoryMapper.updateByPrimaryKeySelective(category);
         if (updateCount>0){
             return ServerResponse.createBySuccess("更新品类成功",category);
         }else{
@@ -62,9 +65,9 @@ public class ICategoryServiceImpl implements ICategoryService {
 
 
     public  ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId){
-        List<Category> categoryList=cartMapper.selectCategoryChildrenByCategoryId(categoryId);
+        List<Category> categoryList=categoryMapper.selectCategoryChildrenByParentId(categoryId);
         if (CollectionUtils.isEmpty(categoryList)){
-            logger.info("未找到当前分类");
+            log.info("未找到当前分类");
         }
         return ServerResponse.createBySuccess(categoryList);
     }
@@ -87,11 +90,11 @@ public class ICategoryServiceImpl implements ICategoryService {
 
     //递归节点
     private Set<Category> findChildCategory(Set<Category> categorySet,Integer categoryId){
-        Category category=cartMapper.selectByPrimaryKey(categoryId);
+        Category category=categoryMapper.selectByPrimaryKey(categoryId);
         if (category!=null){
             categorySet.add(category);
         }
-        List<Category>  categorylist=cartMapper.selectCategoryChildrenByCategoryId(categoryId);
+        List<Category>  categorylist=categoryMapper.selectCategoryChildrenByParentId(categoryId);
         for(Category categoryItem :categorylist){
             findChildCategory(categorySet,categoryItem.getId());
         }

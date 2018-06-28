@@ -176,7 +176,7 @@
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null" >
-        update_time = now(),
+        update_time = now()
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -216,7 +216,7 @@
   </select>
 
 
-  <select id="selectByUserId" resultType="BaseResultMap" parameterType="int">
+  <select id="selectByUserId"  resultMap="BaseResultMap"  parameterType="int">
     select
     <include refid="Base_Column_List" />
     FROM
@@ -226,9 +226,9 @@
   </select>
 
 
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll"  resultMap="BaseResultMap">
    SELECT
-   <include refid="Base_Column_List" />
+    <include refid="Base_Column_List" />
    FROM
    mmall_order
    order BY create_time DESC

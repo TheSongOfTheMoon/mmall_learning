@@ -13,9 +13,10 @@ import com.mmall.pojo.Product;
 import com.mmall.service.ICategoryService;
 import com.mmall.service.IProductService;
 import com.mmall.utils.DateTimeUtils;
-import com.mmall.utils.PropertiesUtils;
+import com.mmall.utils.PropertiesUtil;
 import com.mmall.vo.ProductDetailVo;
 import com.mmall.vo.ProductListVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service("iProductService")//方便被Controller注入到
+@Slf4j
 public class IProductServiceImpl implements IProductService {
 
     //日志跟踪
-    private Logger logger= LoggerFactory.getLogger(IProductServiceImpl.class);
+    //private Logger logger= LoggerFactory.getLogger(IProductServiceImpl.class);
 
     @Autowired
     private ProductMapper productMapper;
@@ -117,7 +119,7 @@ public class IProductServiceImpl implements IProductService {
         productDetailVo.setPrice(product.getPrice());
         productDetailVo.setSubitile(product.getSubtitle());
         //imageHost
-        productDetailVo.setImageHost(PropertiesUtils.getProperties("ftp.server.http.prefix","http://img.happymmall.com/"));
+        productDetailVo.setImageHost(PropertiesUtil.getProperties("ftp.server.http.prefix","http://img.happymmall.com/"));
 
         Category category=categoryMapper.selectByPrimaryKey(product.getId());
         if (category==null){
@@ -164,7 +166,7 @@ public class IProductServiceImpl implements IProductService {
         productListVo.setImageHost(product.getMainImage());
         productListVo.setStatus(product.getStatus());
         productListVo.setSubitile(product.getSubtitle());
-        productListVo.setImageHost(PropertiesUtils.getProperties("ftp.server.http.prefix","http://img.happymmall.com/"));
+        productListVo.setImageHost(PropertiesUtil.getProperties("ftp.server.http.prefix","http://img.happymmall.com/"));
         return productListVo;
     }
 
@@ -210,7 +212,7 @@ public class IProductServiceImpl implements IProductService {
 
 
     public ServerResponse<PageInfo> getProductBykeyWord(String keyword,Integer categoryId,Integer pageNum,Integer pageSize,String orderBy){
-        logger.info("进来了");
+        log.info("进来了");
         if (org.apache.commons.lang3.StringUtils.isBlank(keyword) && categoryId==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -225,12 +227,12 @@ public class IProductServiceImpl implements IProductService {
             }
             categoryIdList=iCategoryService.selectCategoryAndChilerenById(category.getId()).getData();
         }
-        logger.info("关键字");
+        log.info("关键字");
         if (org.apache.commons.lang3.StringUtils.isNotBlank(keyword)){
             //单线程可变字符串序列
             keyword=new StringBuilder().append("%").append(keyword).append("%").toString();
         }
-        logger.info("分页");
+        log.info("分页");
         PageHelper.startPage(pageNum,pageSize);
 
         if (org.apache.commons.lang3.StringUtils.isNotBlank(orderBy)){

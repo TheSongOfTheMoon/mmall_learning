@@ -1,14 +1,19 @@
 package com.mmall.utils;
 
 import java.util.Date;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DateTimeUtils {
 
-    private static final String  STANDARD_FORMAT="yyyy-MM-dd HH:mm:ss";
+    private static Logger  logger= LoggerFactory.getLogger(DateTimeUtils.class);
+
+    public static final  String  STANDARD_FORMAT="yyyy-MM-dd HH:mm:ss";
 
     public static Date StrToDate(String strTime,String dataFormer){
         DateTimeFormatter dateTimeFormatter=DateTimeFormat.forPattern(strTime);
@@ -28,8 +33,10 @@ public class DateTimeUtils {
 
 //--------------------------------------------------------------------------//
     public static Date StrToDate(String strTime){
-        DateTimeFormatter dateTimeFormatter=DateTimeFormat.forPattern(strTime);
-        DateTime dateTime=dateTimeFormatter.parseDateTime(STANDARD_FORMAT);
+        logger.info("打印时间:"+strTime);
+        DateTimeFormatter dtf=DateTimeFormat.forPattern(STANDARD_FORMAT);
+        DateTime dateTime=dtf.parseDateTime(strTime);
+        logger.info("打印时间3:"+dateTime.toDate());
         return dateTime.toDate();
     }
 

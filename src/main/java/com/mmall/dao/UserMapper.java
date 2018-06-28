@@ -22,7 +22,7 @@ public interface UserMapper {
 
     int checkUserEmail(String email);
 
-    public String selectQuestion(String username);
+    String selectQuestion(String username);
 
     int CheckAnswer(@Param("username")String username,@Param("question")String question,@Param("answer")String answer);
 

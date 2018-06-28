@@ -5,29 +5,40 @@ import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
+import com.mmall.utils.CookieUtil;
+import com.mmall.utils.JacksonUtil;
+import com.mmall.utils.RedisPoolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller                 //设置为了让springmvc的扫描器可以扫描
-@RequestMapping("/user")   //将所有的控制请求都归属到用户模块去
+@RequestMapping("/user/")   //将所有的控制请求都归属到用户模块去
 public class UserController {
 
     @Autowired
-    private IUserService iUserService;
+    protected IUserService iUserService;
 
     //用户登录
     @RequestMapping(value = "userlogin.do", method = RequestMethod.GET) //制定请求的类型和方式
     @ResponseBody //制定返回数据的时候以json形式返回
-    public ServerResponse<User> login(String username, String password, HttpSession session) {
+    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpservletResponse, HttpServletRequest httpservletRequest) {
         //开始调用mybatis调dao层
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {
             session.setAttribute(Conts.CURRENT_USER, response.getData());
+
+            CookieUtil.writeLoginToken(httpservletResponse,session.getId());
+            CookieUtil.readLoginToken(httpservletRequest);
+            CookieUtil.delLoginToken(httpservletRequest,httpservletResponse);
+            RedisPoolUtil.setExJedis(session.getId(),Conts.RedisCacheExtime.REDIS_SESSION_EXTIME, JacksonUtil.objToString(response.getData()));
+
         }
         return response;
     }

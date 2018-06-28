@@ -7,6 +7,21 @@
   <!--配置的名称-->
   <display-name>Archetype Created Web Application</display-name>
 
+
+  <!--通过加载 applicationContext.xml 对web和spring容器进行整合加载-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath*:/applicationContext.xml,
+      classpath*:/applicationContext-datasource.xml
+    </param-value>
+  </context-param>
+
+
+
   <!--字符集编码的过滤器：设置所有的请求都走CharacterEncodingFilter 这个类-->
   <filter>
     <filter-name>characterEncodingFilter</filter-name>
@@ -35,16 +50,7 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>-->
 
-  <!--通过加载 applicationContext.xml 对web和spring容器进行整合加载-->
-  <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>
-      classpath:applicationContext.xml
-    </param-value>
-  </context-param>
+
 
   <!--加载SpringMvc的-中央调度处理器-->
   <servlet>

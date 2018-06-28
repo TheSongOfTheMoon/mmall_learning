@@ -6,17 +6,17 @@ import com.mmall.vo.CartVo;
 
 public interface ICartService {
 
-    public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count);
+    ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count);
 
-    public ServerResponse<CartVo> update(Integer userId,Integer productId,Integer count);
+    ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count);
 
-    public ServerResponse<CartVo> delete(Integer userId,String productIds);
+    ServerResponse<CartVo> delete(Integer userId, String productIds);
 
-    public ServerResponse<CartVo> list(Integer userId);
+    ServerResponse<CartVo> list(Integer userId);
 
-    public ServerResponse<CartVo>  selectAllOrUnselectAll(Integer userId,Integer checked);
+    ServerResponse<CartVo>  selectAllOrUnselectAll(Integer userId, Integer checked);
 
-    public ServerResponse<CartVo>  selectAllOrUnselect(Integer userId,Integer productId,Integer checked);
+    ServerResponse<CartVo>  selectAllOrUnselect(Integer userId, Integer productId, Integer checked);
 
-    public ServerResponse<Integer> getCartProductCount(Integer userId);
+    ServerResponse<Integer> getCartProductCount(Integer userId);
 }

@@ -7,9 +7,8 @@ import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.utils.MD5Util;
-import net.sf.jsqlparser.schema.Server;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +17,20 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service("iUserService")//声明成一个service可以被controller调用,向上注入
+@Slf4j
 public class IUserServiceImpl implements IUserService {
 
+
+    //日志跟踪
+    //private Logger logger= LoggerFactory.getLogger(IProductServiceImpl.class);
+
     @Autowired
-    private UserMapper userMapper;
+    protected UserMapper userMapper;
 
-    private Logger logger= LoggerFactory.getLogger(IFileServerImpl.class);
 
-    @Override
     public ServerResponse<User> login(String username, String password) {
+
+        log.info("日志跟踪");
         //检验用户名是否存在
         int resultCount=userMapper.checkUserName(username);
         if (resultCount==0){
@@ -119,7 +123,6 @@ public class IUserServiceImpl implements IUserService {
     }
 
     //忘记密码找回密码问题
-    @Override
     public ServerResponse<String> selectQuestion(String username) {
         ServerResponse<String> valueResponse=this.checkValue(username,Conts.USERNAME);
         if (valueResponse.isSuccess()){
@@ -134,7 +137,7 @@ public class IUserServiceImpl implements IUserService {
     }
 
     //检查问题答案
-    @Override
+
     public ServerResponse<String> CheckAnswer(String username, String question, String answer){
         int resultCount=userMapper.CheckAnswer(username,question,answer);
         if (resultCount>0){
@@ -156,7 +159,7 @@ public class IUserServiceImpl implements IUserService {
         }
         String token=TokenCache.getKey("token_"+username);
         if (org.apache.commons.lang3.StringUtils.isBlank(token)){
-            return ServerResponse.createByErrorMessage("Token无效过着过期");
+            return ServerResponse.createByErrorMessage("Token无效,可能过期");
         }
 
         if (org.apache.commons.lang3.StringUtils.equals(forgetToken,token)){

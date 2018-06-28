@@ -50,6 +50,12 @@ public class Conts {
         Set<String>  PRICE_ASC_DESC= Sets.newHashSet("price_asc","price_desc");
     }
 
+    public interface RedisCacheExtime{
+        int REDIS_SESSION_EXTIME=60*30;//设置登录时间为30分钟
+
+
+    }
+
 
 
     public enum OrderStatusEnum{

@@ -178,7 +178,7 @@
   </update>
 
   <delete id="deleteByShippingIdUserId" parameterType="map">
-  DELETE mmall_shipping
+  DELETE from mmall_shipping
   where id=#{ShippingId}
   AND user_id=#{userId}
   </delete>
@@ -202,14 +202,14 @@
 
 
   <select id="selectByShippingIdUserId" resultMap="BaseResultMap" parameterType="map">
-  SELECT
+  select
     <include refid="Base_Column_List" />
   from mmall_shipping
-  WHERE id=#{shippingId}
-  AND user_id=#{userId}
+  WHERE user_id=#{userId}
+  AND id=#{ShippingId}
   </select>
 
-  <select id="selectByUserId" resultMap="BaseResuultMap" parameterType="int">
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="int">
     select
     <include refid="Base_Column_List" />
     from mmall_shipping

@@ -7,6 +7,7 @@ import com.mmall.pojo.Category;
 import com.mmall.pojo.User;
 import com.mmall.service.ICategoryService;
 import com.mmall.service.IUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,13 +20,15 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/manage/category")
+@Slf4j
 public class CategoryManageController {
-
     @Autowired
     private IUserService iUserService;
 
     @Autowired
     private ICategoryService iCategoryService;
+
+
 
     @RequestMapping(value ="add_Category.do",method = RequestMethod.GET)
     @ResponseBody

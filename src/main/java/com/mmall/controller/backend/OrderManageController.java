@@ -8,16 +8,17 @@ import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.service.IOrderService;
 import com.mmall.vo.OrderVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpSession;
-
+import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
-@RequestMapping("/manage/order/")
+@RequestMapping("/manage/order")
+@Slf4j
 public class OrderManageController {
 
     @Autowired
@@ -28,7 +29,7 @@ public class OrderManageController {
 
 
     //管理端的后台(订单列表)
-    @RequestMapping("getOrderList.do")
+    @RequestMapping(value = "getOrderList.do",method =RequestMethod.POST)
     @ResponseBody
     public ServerResponse<PageInfo>  orderList(HttpSession session, @RequestParam(value ="pageNum",defaultValue ="1")int pageNum,@RequestParam(value ="pageSize",defaultValue ="10")int pageSize){
         //已经登录
@@ -48,7 +49,7 @@ public class OrderManageController {
 
 
     //管理端的后台(详情)
-    @RequestMapping("getOrderDetail.do")
+    @RequestMapping(value = "getOrderDetail.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<OrderVo>  getOrderDetail(HttpSession session, Long orderNo){
         //已经登录
@@ -67,7 +68,7 @@ public class OrderManageController {
 
 
     //管理端的后台(搜索)
-    @RequestMapping("getOrderDetail.do")
+    @RequestMapping(value = "getSearchOrder.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<PageInfo>  SearchOrder(HttpSession session, Long orderNo, @RequestParam(value ="pageNum",defaultValue ="1")int pageNum,@RequestParam(value ="pageSize",defaultValue ="10")int pageSize){
         //已经登录
@@ -86,7 +87,7 @@ public class OrderManageController {
 
 
     //管理端的后台(发货)
-    @RequestMapping("sendOrderGoods.do")
+    @RequestMapping(value = "sendOrderGoods.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String>  sendOrderGoods(HttpSession session, Long orderNo){
         //已经登录
