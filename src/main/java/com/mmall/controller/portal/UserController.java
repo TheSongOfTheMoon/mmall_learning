@@ -8,6 +8,7 @@ import com.mmall.service.IUserService;
 import com.mmall.utils.CookieUtil;
 import com.mmall.utils.JacksonUtil;
 import com.mmall.utils.RedisPoolUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller                 //设置为了让springmvc的扫描器可以扫描
 @RequestMapping("/user/")   //将所有的控制请求都归属到用户模块去
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -29,14 +31,12 @@ public class UserController {
     @RequestMapping(value = "userlogin.do", method = RequestMethod.GET) //制定请求的类型和方式
     @ResponseBody //制定返回数据的时候以json形式返回
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpservletResponse, HttpServletRequest httpservletRequest) {
+        log.info("=======================登录===============================");
         //开始调用mybatis调dao层
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {
             session.setAttribute(Conts.CURRENT_USER, response.getData());
-
             CookieUtil.writeLoginToken(httpservletResponse,session.getId());
-            CookieUtil.readLoginToken(httpservletRequest);
-            CookieUtil.delLoginToken(httpservletRequest,httpservletResponse);
             RedisPoolUtil.setExJedis(session.getId(),Conts.RedisCacheExtime.REDIS_SESSION_EXTIME, JacksonUtil.objToString(response.getData()));
 
         }

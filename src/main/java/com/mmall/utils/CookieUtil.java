@@ -19,6 +19,7 @@ public class CookieUtil {
         Cookie ck=new Cookie(COOKIE_NAME,token);
         ck.setDomain(COOKIE_DOMAIN);
         ck.setPath("/");//代表放置在根目录，如果放在指定目录，则只有指定目录可以获取到cookie
+        ck.setHttpOnly(true);//保护站点被脚本攻击 tomcat>=7
 
         /*
         * 以秒为单位
