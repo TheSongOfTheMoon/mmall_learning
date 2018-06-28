@@ -41,12 +41,13 @@ public class PropertiesUtil {
 
     //重载数据:如果传过来找不到就把默认值回传
     public static String getProperties(String key,String defaultValue){
-        logger.info("读取配置文件信息,读不到则使用默认值");
+        logger.info("读取  "+String.valueOf(key)+"   配置文件信息,读不到则使用默认值");
         String value=props.getProperty(key.trim());
         if (org.apache.commons.lang3.StringUtils.isBlank(value)){
-
+            logger.info("使用  "+String.valueOf(key)+"  默认值");
             return  defaultValue;
         }else{
+            logger.info("读取到  "+String.valueOf(key)+" 配置值");
             return value.trim();
         }
     }

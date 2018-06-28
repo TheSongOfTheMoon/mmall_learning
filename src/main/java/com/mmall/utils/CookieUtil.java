@@ -31,7 +31,7 @@ public class CookieUtil {
         log.info("打印Cookie的信息，Cookie名称:{},Cookie键值:{}",ck.getName(),ck.getValue());
 
         response.addCookie(ck);
-        log.info("打印Cookie的信息完毕");
+        log.info("写入Cookie的信息完毕");
     }
 
 
@@ -47,12 +47,12 @@ public class CookieUtil {
                 }
             }
         }
-        log.info("查无满足的Cookie");
+        log.info("读取不到满足条件的Cookie");
         return null;
 
     }
 
-    //读取Cookie
+    //删除Cookie
     public static void delLoginToken(HttpServletRequest request,HttpServletResponse response){
         Cookie[]  cks=request.getCookies();
         if (cks!=null){
@@ -68,7 +68,7 @@ public class CookieUtil {
                 }
             }
         }
-        log.info("查无满足的Cookie");
+        log.info("找不到想删除的Cookie");
     }
 
 }
