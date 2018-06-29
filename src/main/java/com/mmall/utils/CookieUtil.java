@@ -16,6 +16,7 @@ public class CookieUtil {
 
     //写入Cookie
     public static void writeLoginToken(HttpServletResponse response,String token){
+        log.info("=================开始读取配置配置并写入Coookie====================");
         Cookie ck=new Cookie(COOKIE_NAME,token);
         ck.setDomain(COOKIE_DOMAIN);
         ck.setPath("/");//代表放置在根目录，如果放在指定目录，则只有指定目录可以获取到cookie

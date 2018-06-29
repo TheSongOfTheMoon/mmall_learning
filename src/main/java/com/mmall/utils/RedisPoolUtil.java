@@ -52,6 +52,7 @@ public class RedisPoolUtil {
         try{
             jedis= RedisPool.getJedis();
             jedisResult=jedis.get(key);
+            log.info(jedisResult);
         }catch(Exception e){
             log.error("get key:{} value error",key,e);//不用getMessage是因为信息太少了
             RedisPool.returnBrokenResource(jedis);

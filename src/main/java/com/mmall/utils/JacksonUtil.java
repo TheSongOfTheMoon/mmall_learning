@@ -43,6 +43,7 @@ public class JacksonUtil {
 
     /*把对象转化成jskon*/
     public static <T> String objToString(T obj){
+        log.error("将传递过来的对象转换为字符串");
         if (obj==null){
             log.error("赋值过来想要转换成jskon的对象为空:"+obj);
             return null;
