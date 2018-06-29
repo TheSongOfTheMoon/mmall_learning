@@ -40,6 +40,17 @@
     <url-pattern>/*</url-pattern><!--请求类型-->
   </filter-mapping>
 
+  <!--二期重置session的时间过滤器-->
+  <filter>
+    <filter-name>SessionExpireFilter</filter-name>
+    <filter-class>com.mmall.controller.common.SessionExpireFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>SessionExpireFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+  </filter-mapping>
+
+
   <!--对web和spring容器进行监听的容器：继承底层的事件监听机制-->
   <listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>

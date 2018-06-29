@@ -80,7 +80,7 @@ public class UserController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
         }
-        String strLoginToken=RedisPoolUtil.getJedis(loginToken);
+        String strLoginToken=RedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
         User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user != null) {
             return ServerResponse.createBySuccess(user);
