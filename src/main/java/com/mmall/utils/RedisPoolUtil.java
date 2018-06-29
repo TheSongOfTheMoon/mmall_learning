@@ -20,7 +20,7 @@ public class RedisPoolUtil {
         }catch(Exception e){
             log.error("set key:{} value:{} error",key,extime,e);//不用getMessage是因为信息太少了
             RedisPool.returnBrokenResource(jedis);
-            return jedisResult;
+            return null;
         }
         RedisPool.returnJedis(jedis);
         return jedisResult;
@@ -38,8 +38,7 @@ public class RedisPoolUtil {
         }catch(Exception e){
             log.error("set key:{} value:{} error",key,value,e);//不用getMessage是因为信息太少了
             RedisPool.returnBrokenResource(jedis);
-            RedisPool.returnBrokenResource(jedis);
-            return jedisResult;
+            return null;
         }
         RedisPool.returnJedis(jedis);
         return jedisResult;
@@ -56,7 +55,7 @@ public class RedisPoolUtil {
         }catch(Exception e){
             log.error("get key:{} value error",key,e);//不用getMessage是因为信息太少了
             RedisPool.returnBrokenResource(jedis);
-            return jedisResult;
+            return null;
         }
         RedisPool.returnJedis(jedis);
         return jedisResult;
@@ -73,9 +72,10 @@ public class RedisPoolUtil {
         }catch(Exception e){
             log.error("set key:{} EXtime：{} value:{} error",key,extime,value,e);//不用getMessage是因为信息太少了
             RedisPool.returnBrokenResource(jedis);
-            return jedisResult;
+            return null;
+        }finally{
+            RedisPool.returnJedis(jedis);
         }
-        RedisPool.returnJedis(jedis);
         return jedisResult;
     }
 
