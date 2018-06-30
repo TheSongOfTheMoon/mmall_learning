@@ -2,15 +2,13 @@ package com.mmall.service.impl;
 
 import com.mmall.common.Conts;
 import com.mmall.common.ServerResponse;
-import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.utils.MD5Util;
+import com.mmall.utils.RedisShardedJedisPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -142,7 +140,11 @@ public class IUserServiceImpl implements IUserService {
         int resultCount=userMapper.CheckAnswer(username,question,answer);
         if (resultCount>0){
             String forgetToken= UUID.randomUUID().toString();//生成一个唯一标识的ID
-            TokenCache.setKey("Token_"+username,forgetToken);//生成一个可供认识的标识，并放入缓存中
+            //TokenCache.setKey("Token_"+username,forgetToken);//生成一个可供认识的标识，并放入缓存中
+
+            //以前放置在GuavaCache中，现在放置在Redis中
+            RedisShardedJedisPoolUtil.setExJedis("Token_"+username,60*60*12,forgetToken);
+
             return ServerResponse.createBySuccess(forgetToken);//放入一个对象
         }
         return ServerResponse.createByErrorMessage("问题答案错误!");
@@ -157,7 +159,8 @@ public class IUserServiceImpl implements IUserService {
         if (valueResponse.isSuccess()){
             return ServerResponse.createByErrorMessage("用户名不存在");
         }
-        String token=TokenCache.getKey("token_"+username);
+        //String token=TokenCache.getKey("token_"+username);
+        String token= RedisShardedJedisPoolUtil.getJedis("token_"+username);
         if (org.apache.commons.lang3.StringUtils.isBlank(token)){
             return ServerResponse.createByErrorMessage("Token无效,可能过期");
         }

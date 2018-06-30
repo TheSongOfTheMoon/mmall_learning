@@ -9,10 +9,11 @@ import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IOrderService;
-import lombok.*;
+import com.mmall.utils.CookieUtil;
+import com.mmall.utils.JacksonUtil;
+import com.mmall.utils.RedisShardedJedisPoolUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,8 +44,14 @@ public class OrderController {
     //查询产品
     @RequestMapping("getOrderCartProduct.do")
     @ResponseBody
-    public ServerResponse<String> getOrderCartProduct(HttpSession session){
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse<String> getOrderCartProduct(HttpServletRequest httpServletRequest/*HttpSession session*/){
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken= CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user= JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -57,8 +64,14 @@ public class OrderController {
     //订单详情
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse detail(HttpSession session, Long orderNo){
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse detail(HttpServletRequest httpServletRequest/*HttpSession session*/, Long orderNo){
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -70,8 +83,14 @@ public class OrderController {
     //个人中心查看订单
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse CenterList(HttpSession session, @RequestParam(value = "pageSize",defaultValue ="10")int pageSize, @RequestParam(value = "pageNum",defaultValue ="1")int pageNum){
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse CenterList(HttpServletRequest httpServletRequest/*HttpSession session*/, @RequestParam(value = "pageSize",defaultValue ="10")int pageSize, @RequestParam(value = "pageNum",defaultValue ="1")int pageNum){
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -88,8 +107,14 @@ public class OrderController {
     //创建订单
     @RequestMapping("CreateOrder.do")
     @ResponseBody
-    public ServerResponse<String> CreateOrder(HttpSession session, Integer shippingId){
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse<String> CreateOrder(HttpServletRequest httpServletRequest,HttpSession session, Integer shippingId){
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -103,8 +128,14 @@ public class OrderController {
     //取消订单
     @RequestMapping("CanncelOrder.do")
     @ResponseBody
-    public ServerResponse<String> CanncelOrder(HttpSession session,Long orderNo){
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse<String> CanncelOrder(HttpServletRequest httpServletRequest,HttpSession session,Long orderNo){
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -120,8 +151,14 @@ public class OrderController {
     //支付订单
     @RequestMapping("pay.do")
     @ResponseBody
-    public ServerResponse<String> pay(HttpSession session, Long orderNum, HttpServletRequest request){
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse<String> pay(HttpServletRequest httpServletRequest,HttpSession session, Long orderNum, HttpServletRequest request){
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -182,8 +219,14 @@ public class OrderController {
     //支付宝定时查询
     @RequestMapping("query_order_pay_status.do")
     @ResponseBody
-    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Long orderNum, HttpServletRequest request){
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpServletRequest httpServletRequest/*HttpSession session*/, Long orderNum, HttpServletRequest request){
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }

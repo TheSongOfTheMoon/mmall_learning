@@ -101,7 +101,7 @@ public class RedisPoolUtil {
     public static void main(String[] args){
         Jedis jedis=RedisPool.getJedis();
         RedisPoolUtil.setJedis("Q_Q","YYY");
-        String value=RedisPoolUtil.getJedis("Q_Q");
+        String value= RedisPoolUtil.getJedis("Q_Q");
         System.out.println("打印:"+value);
 
         RedisPoolUtil.setExJedis("Q_Q",60*1,value+"111");

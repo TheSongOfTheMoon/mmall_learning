@@ -1,18 +1,17 @@
 package com.mmall.controller.portal;
 
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import com.mmall.common.Conts;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Shipping;
 import com.mmall.pojo.User;
 import com.mmall.service.IShippingService;
+import com.mmall.utils.CookieUtil;
+import com.mmall.utils.JacksonUtil;
+import com.mmall.utils.RedisShardedJedisPoolUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Controller
@@ -37,9 +36,15 @@ public class ShippingController {
     //新增地址
     @RequestMapping(value ="addShipping.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<Map> add(HttpSession session, Shipping shipping){
-        log.info("开始新增");
-        User user= (User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse<Map> add(HttpServletRequest httpServletRequest/*HttpSession session*/, Shipping shipping){
+        log.info("================开始新增地址=======================");
+        //User user= (User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken= CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user= JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -53,9 +58,15 @@ public class ShippingController {
     //删除地址
     @RequestMapping(value ="del.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> del(HttpSession session, Integer shippingId){
-        log.info("开始删除地址");
-        User user= (User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse<String> del(HttpServletRequest httpServletRequest/*HttpSession session*/, Integer shippingId){
+        log.info("==============================开始删除地址=================================");
+        //User user= (User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -68,8 +79,14 @@ public class ShippingController {
     //更新地址
     @RequestMapping(value ="update.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> update(HttpSession session, Shipping shipping){
-        User user= (User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse<String> update(HttpServletRequest httpServletRequest/*HttpSession session*/, Shipping shipping){
+        //User user= (User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -81,8 +98,14 @@ public class ShippingController {
     //查询
     @RequestMapping(value ="select.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<Shipping> select(HttpSession session, Integer shippingId){
-        User user= (User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse<Shipping> select(HttpServletRequest httpServletRequest/*HttpSession session*/, Integer shippingId){
+        //User user= (User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
@@ -92,10 +115,16 @@ public class ShippingController {
 
     @RequestMapping(value ="PageInfo.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<PageInfo> select(HttpSession session,
+    public ServerResponse<PageInfo> select(HttpServletRequest httpServletRequest/*HttpSession session*/,
                                            @RequestParam(value="pageNum", defaultValue="1")Integer pageNum,
                                            @RequestParam(value="pageSize", defaultValue="10")Integer pageSize){
-        User user= (User) session.getAttribute(Conts.CURRENT_USER);
+        //User user= (User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }

@@ -20,9 +20,7 @@ import com.mmall.dao.*;
 import com.mmall.pojo.*;
 import com.mmall.service.IOrderService;
 import com.mmall.service.IUserService;
-import com.mmall.utils.BigDecimalUtil;
-import com.mmall.utils.DateTimeUtils;
-import com.mmall.utils.FTPUtil;
+import com.mmall.utils.*;
 import com.mmall.utils.PropertiesUtil;
 import com.mmall.vo.OrderItemVo;
 import com.mmall.vo.OrderProductVo;
@@ -520,7 +518,7 @@ public class IOrderServiceImpl implements IOrderService {
                 }
                 // 需要修改为运行机器上的路径
                 log.info("二维码文件路径:" + qrPath);
-                String qrUrl=PropertiesUtil.getProperties("ftp.server.http.prefix")+targetFile;
+                String qrUrl= PropertiesUtil.getProperties("ftp.server.http.prefix")+targetFile;
                 resultMap.put("qrUrl",qrUrl);
 
                 return ServerResponse.createBySuccess(resultMap);

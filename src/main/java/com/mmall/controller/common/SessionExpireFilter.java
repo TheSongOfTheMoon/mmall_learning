@@ -4,7 +4,7 @@ import com.mmall.common.Conts;
 import com.mmall.pojo.User;
 import com.mmall.utils.CookieUtil;
 import com.mmall.utils.JacksonUtil;
-import com.mmall.utils.RedisPoolUtil;
+import com.mmall.utils.RedisShardedJedisPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
@@ -28,13 +28,13 @@ public class SessionExpireFilter implements Filter {
         //判空
         if (StringUtils.isNotEmpty(loginToken)){
 
-            String userStr= RedisPoolUtil.getJedis(loginToken);
+            String userStr= RedisShardedJedisPoolUtil.getJedis(loginToken);
             log.info("判断是否存在对象");
             if (userStr!=null){
                 User user= JacksonUtil.StrToObject(userStr,User.class);
                 if (user!=null){
                     //更新时间
-                    RedisPoolUtil.setExpireJedis(loginToken, Conts.RedisCacheExtime.REDIS_SESSION_EXTIME);
+                    RedisShardedJedisPoolUtil.setExpireJedis(loginToken, Conts.RedisCacheExtime.REDIS_SESSION_EXTIME);
                 }
             }
         }

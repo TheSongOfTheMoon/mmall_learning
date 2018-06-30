@@ -1,13 +1,16 @@
 package com.mmall.controller.backend;
 
-import com.mmall.common.Conts;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Category;
 import com.mmall.pojo.User;
 import com.mmall.service.ICategoryService;
 import com.mmall.service.IUserService;
+import com.mmall.utils.CookieUtil;
+import com.mmall.utils.JacksonUtil;
+import com.mmall.utils.RedisShardedJedisPoolUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -32,8 +35,14 @@ public class CategoryManageController {
 
     @RequestMapping(value ="add_Category.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse addCategory(HttpSession session,String categoryName,@RequestParam(value ="parentId",defaultValue ="0") int parentId){
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+    public ServerResponse addCategory(HttpServletRequest httpServletRequest/*HttpSession session*/, String categoryName, @RequestParam(value ="parentId",defaultValue ="0") int parentId){
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken= CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user= JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"管理员未登录，请登录");
         }
@@ -48,9 +57,15 @@ public class CategoryManageController {
 
     @RequestMapping(value ="set_CategoryName.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse setCategoryName(HttpSession session,String categoryName,Integer categoryId){
+    public ServerResponse setCategoryName(HttpServletRequest httpServletRequest/*HttpSession session*/,String categoryName,Integer categoryId){
         //校验是不是管理员
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"管理员未登录，请登录");
         }
@@ -67,9 +82,15 @@ public class CategoryManageController {
     //获取平级子节点
     @RequestMapping(value ="get_ChildrenParallelCategory.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<List<Category>> getChildrenParallelCategory(HttpSession session, @RequestParam(value="categoryId",defaultValue ="0")Integer categoryId){
+    public ServerResponse<List<Category>> getChildrenParallelCategory(HttpServletRequest httpServletRequest/*HttpSession session*/, @RequestParam(value="categoryId",defaultValue ="0")Integer categoryId){
         //校验是不是管理员
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"管理员未登录，请登录");
         }
@@ -86,9 +107,15 @@ public class CategoryManageController {
     //获取子节点
     @RequestMapping(value ="get_DeepChildrenParallelCategory.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<List<Integer>> getDeepChildrenParallelCategory(HttpSession session, @RequestParam(value="categoryId",defaultValue ="0")Integer categoryId){
+    public ServerResponse<List<Integer>> getDeepChildrenParallelCategory(HttpServletRequest httpServletRequest/*HttpSession session*/, @RequestParam(value="categoryId",defaultValue ="0")Integer categoryId){
         //校验是不是管理员
-        User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        //User user=(User) session.getAttribute(Conts.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"管理员未登录，请登录");
         }
