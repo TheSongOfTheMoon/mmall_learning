@@ -40,8 +40,10 @@ public class UserController {
             //session.setAttribute(Conts.CURRENT_USER, response.getData());//整个User对象存入session
             CookieUtil.writeLoginToken(httpservletResponse,session.getId());
             RedisPoolUtil.setExJedis(session.getId(),Conts.RedisCacheExtime.REDIS_SESSION_EXTIME, JacksonUtil.objToString(response.getData()));
+            return response;
+        }else{
+            return ServerResponse.createByErrorMessage("登录失败");
         }
-        return response;
     }
 
     //退出

@@ -1,10 +1,11 @@
 package com.mmall.common;
 
 import com.mmall.utils.PropertiesUtil;
+import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
+@Slf4j
 public class RedisPool {
 
     private static JedisPool pool;//jedis连接池
@@ -19,6 +20,8 @@ public class RedisPool {
     private static String  redisIp=PropertiesUtil.getProperties("redis.pool.ip");
     private static Integer redisPort=Integer.parseInt(PropertiesUtil.getProperties("redis.pool.port","6379"));
 
+    //private static Integer redisAuth=Integer.parseInt(PropertiesUtil.getProperties("redis.pool.password"));
+
     /*初始化为私有*/
     private static void initPool(){
         JedisPoolConfig config=new JedisPoolConfig();
@@ -27,29 +30,34 @@ public class RedisPool {
         config.setMinIdle(minIdel);
         config.setTestOnBorrow(testOneBorrow);
         config.setTestOnReturn(testOneReturn);
-
         //设置参数当超过连接池数据量是否阻塞直到超时(true),false会超出异常
         config.setBlockWhenExhausted(true);
 
-        //启动连接池
-        pool=new JedisPool(config,redisIp,redisPort,1000*Integer.parseInt(PropertiesUtil.getProperties("redis.pool.timeout","2")));
+        //config.setMaxWaitMillis(60*1000);//当没有连接时候最长等待超时时间
 
+        //启动连接池
+        pool=new JedisPool(config,redisIp,redisPort,1000*Integer.parseInt(PropertiesUtil.getProperties("redis.pool.timeout","20")));
+
+        log.info("=================初始化Redis成功===================");
     }
 
     /*初始化*/
     static {
+        log.info("=================初始化Redis参数===================");
         initPool();
     }
 
 
     /*从连接池获取一个jedis实例*/
     public static Jedis getJedis(){
+        log.info("从连接池获取一个连接");
         return pool.getResource();
     }
 
     /*将实例放置回连接池*/
     public static void returnJedis(Jedis jedis){
         if (jedis!=null){
+            log.info("处理完成，将当前连接归还连接池");
             pool.returnResource(jedis);
         }
     }
