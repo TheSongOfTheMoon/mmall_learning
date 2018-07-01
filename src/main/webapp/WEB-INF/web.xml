@@ -40,13 +40,24 @@
     <url-pattern>/*</url-pattern><!--请求类型-->
   </filter-mapping>
 
+  <!--以下session模式只可以存在其中一个,CYQ-->
   <!--二期重置session的时间过滤器-->
-  <filter>
+ <!-- <filter>
     <filter-name>SessionExpireFilter</filter-name>
     <filter-class>com.mmall.controller.common.SessionExpireFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>SessionExpireFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+  </filter-mapping>-->
+
+  <!--springSession零侵入式框架-->
+  <filter>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>springSessionRepositoryFilter</filter-name>
     <url-pattern>*.do</url-pattern>
   </filter-mapping>
 

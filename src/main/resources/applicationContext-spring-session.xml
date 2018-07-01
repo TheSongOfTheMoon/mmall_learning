@@ -8,17 +8,10 @@
      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-    <!--springmvc文件-->
-    <!--对当前目录下进行扫描,这一步是为了方便注入->进入后关于dao层的注入-->
-    <context:component-scan base-package="com.mmall" annotation-config="true"/>
 
-    <!--<context:annotation-config/>-->
-    <!--AOP切面-->
-    <aop:aspectj-autoproxy/>
 
-    <!--容器文件太大切分成几部分-->
-    <import resource="applicationContext-datasource.xml"/>
-    <import resource="applicationContext-spring-session.xml"/>
+
+
 
 
 

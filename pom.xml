@@ -272,6 +272,14 @@
     </dependency>
 
 
+    <!--单点登录,无侵入式sesson框架-->
+    <dependency>
+      <groupId>org.springframework.session</groupId>
+      <artifactId>spring-session-data-redis</artifactId>
+      <version>1.2.0.RELEASE</version>
+    </dependency>
+
+
   </dependencies>
 
 
