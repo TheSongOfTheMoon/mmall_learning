@@ -9,9 +9,32 @@
      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+    <!--注入对象-->
+    <bean id="redisHttpSessionConfiguration" class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+        <property name="maxInactiveIntervalInSeconds" value="1800"/>
+    </bean>
 
+    <!--设置jedisPool-->
+    <!--class的路径就是在写工具类的时候转化的,调用的那些方法的类的路径-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="20"/>
+    </bean>
 
+    <!--cookie注入-->
+    <bean id="defaultCookieSerializer" class="org.springframework.session.web.http.DefaultCookieSerializer">
+        <property name="cookieName" value="SESSION_NAME"/>
+        <property name="domainName" value=".cyqxm.com"/>
+        <property name="useHttpOnlyCookie" value="true"/>
+        <property name="cookiePath" value="/"/>
+        <property name="cookieMaxAge" value="31536000"/>
+    </bean>
 
+    <!--生成jedisPool连接的工厂-->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >
+       <property name="hostName" value="127.0.0.1"/>
+       <property name="port" value="6379"/>
+       <property name="poolConfig" ref="jedisPoolConfig"/><!--模拟工具类里面配置信息-->
+    </bean>
 
 
 

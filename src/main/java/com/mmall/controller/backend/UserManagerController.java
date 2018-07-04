@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/manager/user/")
+@RequestMapping("/manage/user")
 @Slf4j
 public class UserManagerController {
 
@@ -27,9 +27,9 @@ public class UserManagerController {
     @Autowired
     private IUserService iUserService;
 
-    @RequestMapping(value = "login.do",method = RequestMethod.GET)
+    @RequestMapping(value ="managerLogin.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<User> login(String username, String password,HttpSession session,HttpServletResponse httpservletResponse){
+    public ServerResponse<User> loginAdmin(String username, String password,HttpSession session,HttpServletResponse httpservletResponse){
         log.info("后台登录");
         ServerResponse<User>  response=iUserService.login(username,password);
         log.info("后台登录-成功");

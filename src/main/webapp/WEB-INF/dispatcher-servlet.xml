@@ -8,8 +8,15 @@
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <!--扫描器：扫描controller注解-->
-    <context:component-scan base-package="com.mmall" annotation-config="true"/>
+    <!--======================================springmvc注解文件============================================-->
+    <!--扫描器：springmvc扫描controller注解-->
+    <!--同时关闭默认扫描use-default-filters,限制springmvc只扫描controller，而其他部分交给spring来扫描-->
+    <context:component-scan base-package="com.mmall.controller" annotation-config="true" use-default-filters="false">
+        <!--只扫描controller-->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+
 
     <!--springmvc的注解-->
     <mvc:annotation-driven>
@@ -44,6 +51,15 @@
         <property name="maxInMemorySize" value="4096" /><!--设置分配内存块-缓存区-->
         <property name="defaultEncoding" value="UTF-8"></property><!--默认编码-->
     </bean>
+
+    <!--=====拦截器=======-->
+    <mvc:interceptors><!--复数表示所有的都会被拦截-->
+        <mvc:interceptor>
+            <mvc:mapping path="/manage/**"/>
+            <mvc:exclude-mapping path="/manage/user/managerLogin.do" /><!--排除-->
+            <bean class="com.mmall.controller.common.Interceptor.AuthorityInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 
 </beans>

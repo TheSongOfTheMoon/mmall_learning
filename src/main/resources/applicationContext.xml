@@ -3,18 +3,32 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-    <!--springmvc文件-->
-    <!--对当前目录下进行扫描,这一步是为了方便注入->进入后关于dao层的注入-->
-    <context:component-scan base-package="com.mmall" annotation-config="true"/>
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
+
+
+
+    <!--=========================================spring文件=============================================-->
+    <!--对当前目录下进行扫描,这一步是为了方便注入->进入后关于dao层的注入-->
+    <context:component-scan base-package="com.mmall" annotation-config="true">
+        <!--排除对controller注入的扫描,交给sringmvc的dispatcherServlet-->
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
     <!--<context:annotation-config/>-->
     <!--AOP切面-->
     <aop:aspectj-autoproxy/>
+
+
+    <context:property-placeholder location="classpath:datasource.properties"/><!--追加主动加载外带属性文件&ndash;&gt;&ndash;&gt;-->
+    <!--定时调度-->
+    <task:annotation-driven/>
+
+
+
+
 
     <!--容器文件太大切分成几部分-->
     <import resource="applicationContext-datasource.xml"/>

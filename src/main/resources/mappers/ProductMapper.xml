@@ -200,21 +200,26 @@
 
   <select id="selectByNameAndCategoryIds" resultMap="BaseResultMap" parameterType="map">
     SELECT
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List" ></include>
     FROM  mmall_product
     WHERE status=1
     <if test="productName !=null">
       and name LIKE #{productName}
     </if>
-    <if test="categoryId !=null">
+    <if test="categoryIdList !=null">
       and category_id IN
       <foreach  item="item" index="index" open="(" separator="," close=")" collection="categoryIdList">
         #{item}
       </foreach>
     </if>
-
-
   </select>
 
+  <select id="selectStockByProductId" resultType="int" parameterType="java.lang.Integer">
+  select stock
+  from mmall_product
+  where id=#{id}
+  FOR UPDATE
+  /*update这句是一个要求用主键的时候则变成行锁*/
+  </select>
 
 </mapper>

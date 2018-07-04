@@ -45,7 +45,7 @@ public class ProductManageController {
     public ServerResponse SaveProduct(HttpServletRequest httpServletRequest,/*HttpSession session**/ Product product){
         //已经登录
         //User user= (User) session.getAttribute(Conts.CURRENT_USER);
-        String loginToken= CookieUtil.readLoginToken(httpServletRequest);
+        /*String loginToken= CookieUtil.readLoginToken(httpServletRequest);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
         }
@@ -60,8 +60,9 @@ public class ProductManageController {
             return iProductService.SaveOrUpdateProduct(product);
         }else{
             return ServerResponse.createByErrorMessage("保存产品失败");
-        }
-
+        }*/
+        /*全部通过拦截器来执行拦截和处理*/
+        return iProductService.SaveOrUpdateProduct(product);
     }
 
     @RequestMapping(value = "SetSaleStatus.do",method = RequestMethod.GET)
@@ -69,7 +70,7 @@ public class ProductManageController {
     public ServerResponse SetSaleStatus(HttpServletRequest httpServletRequest/*HttpSession session*/, Product product){
         //已经登录
         //User user= (User) session.getAttribute(Conts.CURRENT_USER);
-        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        /*String loginToken=CookieUtil.readLoginToken(httpServletRequest);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
         }
@@ -84,7 +85,9 @@ public class ProductManageController {
             return iProductService.SetSaleStatus(product.getId(),product.getStatus());
         }else{
             return ServerResponse.createByErrorMessage("保存产品失败");
-        }
+        }*/
+         /*全部通过拦截器来执行拦截和处理*/
+        return iProductService.SetSaleStatus(product.getId(),product.getStatus());
     }
 
 
@@ -93,7 +96,7 @@ public class ProductManageController {
     public ServerResponse<ProductDetailVo> getmanageProductDetails(HttpServletRequest httpServletRequest/*HttpSession session*/, Integer productId){
         //已经登录
         //User user= (User) session.getAttribute(Conts.CURRENT_USER);
-        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        /*String loginToken=CookieUtil.readLoginToken(httpServletRequest);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
         }
@@ -108,7 +111,9 @@ public class ProductManageController {
             return iProductService.GetManageProductDetails(productId);
         }else{
             return ServerResponse.createByErrorMessage("保存产品失败");
-        }
+        }*/
+         /*全部通过拦截器来执行拦截和处理*/
+        return iProductService.GetManageProductDetails(productId);
     }
 
 
@@ -118,7 +123,7 @@ public class ProductManageController {
     public ServerResponse getList(HttpServletRequest httpServletRequest/*HttpSession session*/, @RequestParam(value = "pageNum",defaultValue ="1")int pageNum, @RequestParam(value ="pageSize",defaultValue ="10") int pageSize){
         //已经登录
         //User user= (User) session.getAttribute(Conts.CURRENT_USER);
-        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        /*String loginToken=CookieUtil.readLoginToken(httpServletRequest);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
         }
@@ -133,7 +138,9 @@ public class ProductManageController {
             return iProductService.getProductList(pageNum,pageSize);
         }else{
             return ServerResponse.createByErrorMessage("保存产品失败");
-        }
+        }*/
+         /*全部通过拦截器来执行拦截和处理*/
+        return iProductService.getProductList(pageNum,pageSize);
     }
 
 
@@ -144,7 +151,7 @@ public class ProductManageController {
     public ServerResponse getProductSearch(HttpServletRequest httpServletRequest/*HttpSession session*/,String ProductName,Integer productId, @RequestParam(value = "pageNum",defaultValue ="1")int pageNum, @RequestParam(value ="pageSize",defaultValue ="10") int pageSize){
         //已经登录
         //User user= (User) session.getAttribute(Conts.CURRENT_USER);
-        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        /*String loginToken=CookieUtil.readLoginToken(httpServletRequest);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
         }
@@ -159,7 +166,9 @@ public class ProductManageController {
             return iProductService.getProductSearchList(ProductName,productId,pageNum,pageSize);
         }else{
             return ServerResponse.createByErrorMessage("搜索产品失败");
-        }
+        }*/
+         /*全部通过拦截器来执行拦截和处理*/
+        return iProductService.getProductSearchList(ProductName,productId,pageNum,pageSize);
     }
 
 
@@ -169,11 +178,17 @@ public class ProductManageController {
     public  ServerResponse upload(@RequestParam(value ="upload_file" ,required = false)MultipartFile file, HttpServletRequest request){
         //已经登录
         //User user= (User)session.getAttribute(Conts.CURRENT_USER);
-        //if (user==null){
-         //   return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"管理员未登录，请登录");
-        //}
+        /*String loginToken=CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取用户信息");
+        }
+        String strLoginToken= RedisShardedJedisPoolUtil.getJedis(loginToken);//将用户登录信息存入redis中
+        User user=JacksonUtil.StrToObject(strLoginToken,User.class);
+        if (user==null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"管理员未登录，请登录");
+        }
         //已有权限
-        //if (iUserService.checkAdminRole(user).isSuccess()){
+        if (iUserService.checkAdminRole(user).isSuccess()){
             String path=request.getSession().getServletContext().getRealPath("upload");//上传的路径名,一般是泛指在ewebapps中
             //创建一个文件处理的服务
             String targetFileName=iFileServer.upload(file,path);
@@ -182,20 +197,30 @@ public class ProductManageController {
             filemap.put("uri",targetFileName);
             filemap.put("url",url);
             return ServerResponse.createBySuccess(filemap);
-        //}else{
-            //return ServerResponse.createByErrorMessage("上传校验失败");
-        //}
+        }else{
+            return ServerResponse.createByErrorMessage("上传校验失败");
+        }*/
+
+        /*全部经由拦截器拦截*/
+        String path=request.getSession().getServletContext().getRealPath("upload");//上传的路径名,一般是泛指在ewebapps中
+        //创建一个文件处理的服务
+        String targetFileName=iFileServer.upload(file,path);
+        String url= PropertiesUtil.getProperties("ftp.server.http.prefix")+targetFileName;
+        Map filemap=new HashMap();
+        filemap.put("uri",targetFileName);
+        filemap.put("url",url);
+        return ServerResponse.createBySuccess(filemap);
     }
 
 
-    @RequestMapping(value = "richtext_upload.do",method = RequestMethod.POST)
+    @RequestMapping(value = "richtext_img_upload.do",method = RequestMethod.POST)
     @ResponseBody
     public Map richupload(HttpServletRequest httpServletRequest/*HttpSession session */, @RequestParam(value ="upload_file" ,required = false)MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         Map resultMap = new HashMap();
 
         //已经登录
         //User user = (User) session.getAttribute(Conts.CURRENT_USER);
-        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        /*String loginToken=CookieUtil.readLoginToken(httpServletRequest);
         if(StringUtils.isEmpty(loginToken)){
             resultMap.put("success", false);
             resultMap.put("msg", "请登录管理员");
@@ -229,7 +254,24 @@ public class ProductManageController {
             resultMap.put("success", false);
             resultMap.put("msg", "无操作权限");
             return resultMap;
+        }*/
+
+        /*全部经由拦截器拦截*/
+        String path = request.getSession().getServletContext().getRealPath("upload");//上传的路径名,一般是泛指在ewebapps中
+        //创建一个文件处理的服务
+        String targetFileName = iFileServer.upload(file, path);
+
+        if (org.apache.commons.lang3.StringUtils.isBlank(targetFileName)) {
+            resultMap.put("success", false);
+            resultMap.put("msg", "上传失败");
         }
+        String url = PropertiesUtil.getProperties("ftp.server.http.prefix") + targetFileName;
+        Map filemap = new HashMap();
+        resultMap.put("success", true);
+        resultMap.put("msg", "上传成功");
+        filemap.put("file_path", url);
+        response.addHeader("Accesss-Control-Allow-Headers", "X-File-Name");
+        return resultMap;
 
     }
 }

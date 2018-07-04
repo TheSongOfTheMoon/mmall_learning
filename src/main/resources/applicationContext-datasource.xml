@@ -10,7 +10,9 @@
      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!--spring.xml文件-->
-    <context:component-scan base-package="com.mmall" annotation-config="true"/><!--多余-->
+    <!--<context:component-scan base-package="com.mmall" annotation-config="true"/>--><!--多余-->
+    <!--annoton-config对已经注册的bean进行操作,可以进一步对bean对象进行操作,但是在扫描的时候添加该属性则可以不再使用此-->
+
 
     <!--设置要加载的属性文件和读取出来的编码-->
     <bean id="propertyConfigurer"
@@ -84,12 +86,12 @@
     </bean>
 
     <!-- 使用@Transactional进行声明式事务管理需要声明下面这行 -->
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
-    <!-- 事务管理 -->
+   <!-- <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+    &lt;!&ndash; 事务管理 &ndash;&gt;
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
-        <property name="rollbackOnCommitFailure" value="true"/><!--设置提交失败是否回滚-->
-    </bean>
+        <property name="rollbackOnCommitFailure" value="true"/>&lt;!&ndash;设置提交失败是否回滚&ndash;&gt;
+    </bean>-->
 
 
 </beans>

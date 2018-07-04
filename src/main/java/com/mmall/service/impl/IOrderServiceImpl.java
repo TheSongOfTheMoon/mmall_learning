@@ -29,6 +29,7 @@ import com.mmall.vo.ShippingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -289,6 +290,38 @@ public class IOrderServiceImpl implements IOrderService {
         }
     }
 
+    //定时关闭订单
+    @Override
+    public void CloseOrderTask(int hour) {
+        log.info("查询超过{} 小时的超时订单",String.valueOf(hour));
+        Date closeDateTime= DateUtils.addHours(new Date(),-hour);
+        //获取订单
+        List<Order> orderList=orderMapper.selectOrderStatusByCreateTime(Conts.OrderStatusEnum.NO_PAY.getCode(),DateTimeUtils.DateToStr(closeDateTime));
+        for (Order order:orderList){
+            List<OrderItem> orderItemList=orderItemMapper.getByOrderNoBy(order.getOrderNo());
+            for (OrderItem orderItem :orderItemList){
+                //一定要用主键where作为条件,防止锁表,同时必须支持mysql的InnoDB引擎
+                Integer stock=productMapper.selectStockByProductId(orderItem.getProductId());
+
+                if (stock==null){
+                    //如果商品被下架了,那么便没必要更新
+                    continue;
+                }
+                log.info("维护超时订单的商品库存");
+                //之所以要用新对象，而不用旧的对象，是为了简化SQL
+                Product product=new Product();
+                product.setId(orderItem.getId());
+                product.setStock(stock+orderItem.getQuantity());
+                productMapper.updateByPrimaryKeySelective(product);
+
+            }
+            log.info("关闭订单OrderByNo:{}",order.getOrderNo());
+            orderMapper.closeOrderByOrderId(order.getId());//关闭订单
+            log.info("关闭订单OrderByNo:{} 成功",order.getOrderNo());
+        }
+
+
+    }
 
 
 //===================================VO封装=======================================================================================================//

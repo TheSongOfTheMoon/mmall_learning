@@ -42,24 +42,24 @@
 
   <!--以下session模式只可以存在其中一个,CYQ-->
   <!--二期重置session的时间过滤器-->
- <!-- <filter>
+  <filter>
     <filter-name>SessionExpireFilter</filter-name>
     <filter-class>com.mmall.controller.common.SessionExpireFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>SessionExpireFilter</filter-name>
     <url-pattern>*.do</url-pattern>
-  </filter-mapping>-->
+  </filter-mapping>
 
   <!--springSession零侵入式框架-->
-  <filter>
+  <!--<filter>
     <filter-name>springSessionRepositoryFilter</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>springSessionRepositoryFilter</filter-name>
     <url-pattern>*.do</url-pattern>
-  </filter-mapping>
+  </filter-mapping>-->
 
 
   <!--对web和spring容器进行监听的容器：继承底层的事件监听机制-->
@@ -83,9 +83,15 @@
 
 
   <!--设置映射器-->
-  <servlet-mapping>
+  <!--<servlet-mapping>
     <servlet-name>dispatcher</servlet-name>
     <url-pattern>*.do</url-pattern>
+  </servlet-mapping>-->
+
+  <!--为了改造restful需要自定义springmvc拦截http请求的方式-->
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
 
 </web-app>

@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller                 //设置为了让springmvc的扫描器可以扫描
-@RequestMapping("/user/")   //将所有的控制请求都归属到用户模块去
+@RequestMapping("/user2/")   //将所有的控制请求都归属到用户模块去
 @Slf4j
 public class SpringSessionUserController {
 
@@ -31,7 +31,7 @@ public class SpringSessionUserController {
     //用户登录
     @RequestMapping(value = "userlogin.do", method = RequestMethod.GET) //制定请求的类型和方式
     @ResponseBody //制定返回数据的时候以json形式返回
-    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpservletResponse, HttpServletRequest httpservletRequest) {
+    public ServerResponse<User> login(String username, String password, HttpSession session) {
         log.info("=================================登录================================");
         //开始调用mybatis调dao层
         ServerResponse<User> response = iUserService.login(username, password);

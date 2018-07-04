@@ -233,4 +233,22 @@
    mmall_order
    order BY create_time DESC
   </select>
+
+
+  <select id="selectOrderStatusByCreateTime" resultMap="BaseResultMap" parameterType="Map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    mmall_order
+    WHERE status=#{status}
+    <![CDATA[ AND create_time<= #{date}]]>/*对于关键字冲突的时候*/
+    order BY create_time DESC
+
+  </select>
+  
+  <update id="closeOrderByOrderId" parameterType="int">
+    UPDATE mmall_order
+    SET status=0
+    where id=#{id}
+  </update>
 </mapper>

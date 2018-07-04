@@ -37,6 +37,8 @@ public class SessionExpireFilter implements Filter {
                     RedisShardedJedisPoolUtil.setExpireJedis(loginToken, Conts.RedisCacheExtime.REDIS_SESSION_EXTIME);
                 }
             }
+        }else{
+            log.info("没有找到loginToken，不执行时间重置");
         }
         chain.doFilter(request,response);
 

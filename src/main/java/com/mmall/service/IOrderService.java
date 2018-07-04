@@ -33,4 +33,7 @@ public interface IOrderService {
 
     //订单号发货
     ServerResponse<String>  manageSendGoods(Long orderNo);
+
+    /*======================================定时任务关单===========================================*/
+    void CloseOrderTask(int hour);
 }
