@@ -52,10 +52,12 @@ public class Conts {
 
     public interface RedisCacheExtime{
         int REDIS_SESSION_EXTIME=60*30;//设置登录时间为30分钟
-
-
     }
 
+
+    public interface REDIS_LOCK{
+        String TASK_CLOSE_ORDER_LOCK="CLOSE_ORDER_LOCK";//设置锁的key
+    }
 
 
     public enum OrderStatusEnum{

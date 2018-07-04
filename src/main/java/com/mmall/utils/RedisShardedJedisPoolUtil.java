@@ -11,7 +11,7 @@ public class RedisShardedJedisPoolUtil {
 
 
 
-    /*设置有效期多久*/
+    /*设置有效期多久(单位秒)*/
     public static Long setExpireJedis(String key,int extime){
         log.info("重置键值"+key+"的有效期为:"+String.valueOf(extime));
         ShardedJedis shardedJedis=null;
@@ -98,6 +98,51 @@ public class RedisShardedJedisPoolUtil {
         RedisShardedJedisPool.returnShardedJedis(shardedJedis);
         return shardedJedisResult;
     }
+
+
+
+    /*只有不存在才可以设置成功*/
+    public static Long setNxJedis(String key,String value){
+        log.info("分布式锁---设置键值:{}"+String.valueOf(key));
+        ShardedJedis shardedJedis=null;
+        Long shardedJedisResult=null;
+        try{
+            shardedJedis= RedisShardedJedisPool.getShardedJedis();
+            shardedJedisResult=shardedJedis.setnx(key,value);
+        }catch(Exception e){
+            log.error("setnx key:{}  value:{} error",key,value,e);//不用getMessage是因为信息太少了
+            RedisShardedJedisPool.returnBrokenResource(shardedJedis);
+            return null;
+        }finally{
+            RedisShardedJedisPool.returnShardedJedis(shardedJedis);
+        }
+        return shardedJedisResult;
+    }
+
+    /*getSet方法
+    * 返回给定 key 的旧值。 当 key 没有旧值时，即 key 不存在时，返回 nil ,并设置新的值(value)
+    * */
+    public static String GetOldValNorSetValJedis(String key,String value){
+        log.info("分布式锁---设置键值:{}"+String.valueOf(key));
+        ShardedJedis shardedJedis=null;
+        String shardedJedisResult=null;
+        try{
+            shardedJedis= RedisShardedJedisPool.getShardedJedis();
+            shardedJedisResult=shardedJedis.getSet(key,value);
+        }catch(Exception e){
+            log.error("setnx key:{}  value:{} error",key,value,e);//不用getMessage是因为信息太少了
+            RedisShardedJedisPool.returnBrokenResource(shardedJedis);
+            return null;
+        }finally{
+            RedisShardedJedisPool.returnShardedJedis(shardedJedis);
+        }
+        return shardedJedisResult;
+    }
+
+
+
+
+
 
     /*调试测试方法*/
     public static void main(String[] args){
