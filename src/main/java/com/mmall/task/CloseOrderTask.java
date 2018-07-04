@@ -57,8 +57,7 @@ public class CloseOrderTask {
         Long setNxResult= RedisShardedJedisPoolUtil.setNxJedis(Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK,String.valueOf(System.currentTimeMillis()+timeout));
         if (setNxResult!=null&&setNxResult.intValue()==1){
             //返回值1表示锁标志设置成功,可以获取锁
-            //this.CloseOrder(Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK);
-            log.info("获取到锁，开始处理");
+            this.CloseOrder(Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK);
         }else{
             log.info("锁冲突，开始判断");
             //尝试原有key值
@@ -68,7 +67,7 @@ public class CloseOrderTask {
             if (lockValueStr!=null&&System.currentTimeMillis()>Long.parseLong(lockValueStr)){
                 String getSetResult=RedisShardedJedisPoolUtil.GetOldValNorSetValJedis(Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK,String.valueOf(System.currentTimeMillis()+timeout));
                 if (getSetResult==null||(getSetResult!=null&& StringUtils.equals(lockValueStr,getSetResult))){
-                    //this.CloseOrder(Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK);
+                    this.CloseOrder(Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK);
                     log.info("获取到锁，开始处理");
                 }else{
                     log.info("没有获取到分布式锁：{}",Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK);
@@ -92,7 +91,7 @@ public class CloseOrderTask {
         RedisShardedJedisPoolUtil.setExpireJedis(lockName,5);
         log.info("获取 {} ThreadName ：{}",lockName,Thread.currentThread().getName());
         Integer hour=Integer.parseInt(PropertiesUtil.getProperties("task.colse.order.time.hour","2"));
-        //iOrderService.CloseOrderTask(hour);
+        iOrderService.CloseOrderTask(hour);
         RedisShardedJedisPoolUtil.delJedis(lockName);
         log.info("释放 {} ThreadName ：{}",lockName,Thread.currentThread().getName());
         log.info("定时调度------分布式锁----定时关单结束");
