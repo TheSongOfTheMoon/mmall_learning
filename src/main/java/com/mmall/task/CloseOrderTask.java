@@ -73,7 +73,7 @@ public class CloseOrderTask {
                     log.info("没有获取到分布式锁：{}",Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK);
                 }
             }else{
-                this.CloseOrder(Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK);
+                log.info("没有获取到分布式锁：{}",Conts.REDIS_LOCK.TASK_CLOSE_ORDER_LOCK);
             }
 
         }
