@@ -280,6 +280,21 @@
     </dependency>
 
 
+    <!--Redisson框架-Redis深入处理-集合了大部分分布式的工具类-->
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+
+    <!--redisson的子依赖-->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-avro</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+
+
   </dependencies>
 
 
