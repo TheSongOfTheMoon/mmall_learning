@@ -160,7 +160,9 @@ public class IUserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("用户名不存在");
         }
         //String token=TokenCache.getKey("token_"+username);
-        String token= RedisShardedJedisPoolUtil.getJedis("token_"+username);
+
+        log.info("'尝试获取forgetoken'");
+        String token= RedisShardedJedisPoolUtil.getJedis("Token_"+username);
         if (org.apache.commons.lang3.StringUtils.isBlank(token)){
             return ServerResponse.createByErrorMessage("Token无效,可能过期");
         }

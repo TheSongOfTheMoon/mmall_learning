@@ -109,8 +109,8 @@ public class UserController {
     //重置密码
     @RequestMapping(value = "forget_rest_password.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> forgetRestPassword(String usrname,String passwordNew,String forgetToken){
-        return iUserService.forgetRestPassword(usrname,passwordNew,forgetToken);
+    public ServerResponse<String> forgetRestPassword(String username,String passwordNew,String forgetToken){
+        return iUserService.forgetRestPassword(username,passwordNew,forgetToken);
     }
 
     //修改密码
