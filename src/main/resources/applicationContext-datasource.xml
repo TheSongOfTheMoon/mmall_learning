@@ -27,7 +27,7 @@
         <property name="fileEncoding" value="utf-8"/>
     </bean>
 
-
+    <!--数据库连接池的属性-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${db.driverClassName}"/>
         <property name="url" value="${db.url}"/>
@@ -61,7 +61,10 @@
         <property name="validationQuery" value="SELECT 1 FROM dual"/>
     </bean>
 
-    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <!--连接池工厂-->
+    <!--用于将配置密码等信息进行加载然后调用维护有SQL类的文件-->
+    <!--MappedStatement读取mapper的SQL信息-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"><!--底层默认读取自己的xml文件加载信息连接数据库-->
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath*:mappers/*Mapper.xml"></property><!--将mybatis的sql实现都读取-->
 
@@ -80,7 +83,7 @@
 
     </bean>
 
-    <!--此处对service提供dao层接口的时候进行的扫描操作：自动装配的时候注入-->
+    <!--此处对service提供dao层接口的时候进行的扫描操作：自动装配的时候注入,用于dao层的xxxMappper注入-->
     <bean name="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.mmall.dao"/>
     </bean>

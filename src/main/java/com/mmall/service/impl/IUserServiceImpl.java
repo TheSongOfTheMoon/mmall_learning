@@ -128,7 +128,7 @@ public class IUserServiceImpl implements IUserService {
         }
         String question=userMapper.selectQuestion(username);
         if (org.apache.commons.lang3.StringUtils.isNotBlank(question)){
-            return ServerResponse.createBySuccessMessage(question);
+            return ServerResponse.createBySuccess(question);
         }
 
         return ServerResponse.createByErrorMessage("找回密码的问题不存在");

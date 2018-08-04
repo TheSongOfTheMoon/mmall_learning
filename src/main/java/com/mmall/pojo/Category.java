@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Category {
+    /*购物车类型*/
     private Integer id;
 
     private Integer parentId;

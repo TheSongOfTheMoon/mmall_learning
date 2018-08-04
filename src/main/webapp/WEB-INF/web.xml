@@ -61,7 +61,7 @@
     <url-pattern>*.do</url-pattern>
   </filter-mapping>-->
 
-
+  <!-- RequestContextListener实现ServletRequestListener监听器接口接,Web服务器接收的每次请求都会通知该监听器,将Spring容器与Web容器结合的更加密切 -->
   <!--对web和spring容器进行监听的容器：继承底层的事件监听机制-->
   <listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>

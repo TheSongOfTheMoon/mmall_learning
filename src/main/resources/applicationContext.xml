@@ -23,10 +23,9 @@
 
 
     <context:property-placeholder location="classpath:datasource.properties"/><!--追加主动加载外带属性文件&ndash;&gt;&ndash;&gt;-->
+
     <!--定时调度-->
     <task:annotation-driven/>
-
-
 
 
 

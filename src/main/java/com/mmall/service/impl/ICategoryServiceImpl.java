@@ -88,9 +88,9 @@ public class ICategoryServiceImpl implements ICategoryService {
         return ServerResponse.createBySuccess(categorylist);
     }
 
-    //递归节点
+    //递归节点：利用HashSet是因为Set无序不重复
     private Set<Category> findChildCategory(Set<Category> categorySet,Integer categoryId){
-        Category category=categoryMapper.selectByPrimaryKey(categoryId);
+        Category category=categoryMapper.selectByPrimaryKey(categoryId);/*类型Id*/
         if (category!=null){
             categorySet.add(category);
         }
@@ -101,6 +101,13 @@ public class ICategoryServiceImpl implements ICategoryService {
         return categorySet;
     }
 
-
+    /*
+    * 类型表每条记录有自己的id也有自己的一个节点id,其中id是自动递增，但是子节点id是可认为维护的
+    * 每次都是以查出来的id为条件查找，如果查到不为空，则添加进Set列表中，进列表，查到为空则跳过
+    *
+    *每次提供一个categoryId节点,先出该节点的记录，有多少个，存储多少个进列表
+    *然后根据该对象的categoryId作为递归节点去查询，查出多少个则获取多少个，直到以递归节点去查询再也找不到下级节点
+    *原则:类型节点的子节点必须为0，代表着最大级别
+    * */
 
 }

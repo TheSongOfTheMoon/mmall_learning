@@ -216,8 +216,9 @@ public class IProductServiceImpl implements IProductService {
         }
         List<Integer>  categoryIdList=new ArrayList<Integer>();
         if (categoryId!=null){
-            Category category=categoryMapper.selectByPrimaryKey(categoryId);
+            Category category=categoryMapper.selectByPrimaryKey(categoryId);//产品类型
             if (category==null && org.apache.commons.lang3.StringUtils.isBlank(keyword)){
+                //返回一个空的结果集,不报错
                 PageHelper.startPage(pageNum,pageSize);
                 List<ProductListVo>  productListVoList=Lists.newArrayList();
                 PageInfo pageinfo=new PageInfo(productListVoList);

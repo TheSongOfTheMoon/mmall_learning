@@ -12,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(exclude ="updateTime")
 public class Cart extends Category {
+    /*购物车*/
     private Integer id;
 
     private Integer userId;

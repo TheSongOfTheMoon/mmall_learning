@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
 @Component
 @Slf4j
 public class RedissonManager {
-
+    /*redisson是在redis的基础的java驻内存数据网格*/
     /*此处也可以使用lombok,但会造成过多的开发和工具类不完整，一般只在pojo里面生成就可以了*/
     /*Redisson速读:用于管理redisson的各类方法*/
     private Config config=new Config();

@@ -94,10 +94,12 @@ public class UserController {
     @RequestMapping(value = "forget_get_question.do",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> forgetGetQuestion(String username){
-         return iUserService.selectQuestion(username);
+        log.info("获取密码提示问题?");
+        return iUserService.selectQuestion(username);
 
     }
 
+    //校验答案
     @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username,String question,String answer){

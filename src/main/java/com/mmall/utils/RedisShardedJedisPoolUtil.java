@@ -156,6 +156,19 @@ public class RedisShardedJedisPoolUtil {
         //RedisShardedJedisPoolUtiltmp.setExJedis("Q_Q",60*1,value+"111");
         //RedisShardedJedisPoolUtiltmp.setExpireJedis("Q_Q",60*2);
         System.out.println("结束了");
+
+
+
+        int j=0;
+        for(int i=0;i<1000;i++) {
+            j=j++;
+        }
+        System.out.println(j);
+
+        log.info("测试是否空指针");
+        Integer i = null;
+        int k = i.intValue();
+
     }
 
 

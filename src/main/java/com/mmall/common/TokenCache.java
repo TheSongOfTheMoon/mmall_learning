@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 //guavaCache缓存
 public class TokenCache {
+    /*如果数据最近被访问过，那么将来被访问的几率也更高”*/
 
     //速读：在忘记密码时候生成一个fotgetToken,锁定用户，防止产生横向越权问题，将token放置于缓存之中12小时
     public static Logger logger= LoggerFactory.getLogger(TokenCache.class);

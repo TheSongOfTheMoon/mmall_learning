@@ -90,18 +90,18 @@ public class IOrderServiceImpl implements IOrderService {
         //购物车在数据库是以一条记录登记一个商品,观察商品归属于何人,最后统一集合成一个购物车
         List<Cart> cartList=cartMapper.selectCartByUserId(userId);
 
-        ServerResponse<List<OrderItem>> serverresponse=this.getCatrOrderItem(userId,cartList);
+        ServerResponse<List<OrderItem>> serverresponse=this.getCatrOrderItem(userId,cartList);//将库存和上下架校验通过的数据放入list中
         //判断
         if (!serverresponse.isSuccess()){
             return serverresponse;
         }
-        List<OrderItem>  orderItemList=(List<OrderItem>)serverresponse.getData();
+        List<OrderItem>  orderItemList=(List<OrderItem>)serverresponse.getData();//从购物车中查询的产品
         //生成总价
         BigDecimal payment=this.getOrderTotalPrice(orderItemList);
 
 
         //生成订单
-        Order order=this.assemibleOrder(userId,shippingId,payment);
+        Order order=this.assemibleOrder(userId,shippingId,payment);//插入订单记录的数据库(非明细)
         if (order==null){
             return ServerResponse.createByErrorMessage("生成订单失败!");
         }
@@ -114,18 +114,18 @@ public class IOrderServiceImpl implements IOrderService {
             orderItem.setOrderNo(order.getOrderNo());
         }
 
-        //批量插入
+        //批量插入订单明细
         orderItemMapper.BatchInsert(orderItemList);
 
 
         //生成成功,减少产品库存，清空购物车
         this.reduceProductStock(orderItemList);
 
-        //购物车
+        //购物车--删除生成订单的记录
         this.clearCart(cartList);
 
-        //返回订单明细
-        OrderVo orderVo=this.assemibleOrderVo(order,orderItemList);
+        //返回订单明细---视图Vo
+        OrderVo orderVo=this.assemibleOrderVo(order,orderItemList);/*维护有订单明细列表*/
         log.info("创建订单成功");
         return ServerResponse.createBySuccess(orderVo);
 
@@ -184,7 +184,7 @@ public class IOrderServiceImpl implements IOrderService {
         return orderItemVo;
     }
 
-    //查询产品
+    //查询产品--未生成订单
     public ServerResponse getOrderCartProduct(Integer userId){
         OrderProductVo orderProductVo=new OrderProductVo();
         List<Cart> cartList=cartMapper.selectCheckedCartByUserId(userId);

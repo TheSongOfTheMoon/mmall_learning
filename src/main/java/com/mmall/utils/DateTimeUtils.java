@@ -13,7 +13,7 @@ public class DateTimeUtils {
 
     private static Logger  logger= LoggerFactory.getLogger(DateTimeUtils.class);
 
-    public static final  String  STANDARD_FORMAT="yyyy-MM-dd HH:mm:ss";
+    public static final  String  STANDARD_FORMAT="yyyy-MM-dd HH:mm:ss";//格式处理
 
     public static Date StrToDate(String strTime,String dataFormer){
         DateTimeFormatter dateTimeFormatter=DateTimeFormat.forPattern(strTime);

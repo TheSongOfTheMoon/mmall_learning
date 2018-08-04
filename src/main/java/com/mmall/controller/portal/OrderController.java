@@ -39,8 +39,6 @@ public class OrderController {
     private IOrderService IOrderService;
 
 
-
-
     //查询产品
     @RequestMapping("getOrderCartProduct.do")
     @ResponseBody
